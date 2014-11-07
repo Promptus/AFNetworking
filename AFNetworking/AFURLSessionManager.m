@@ -177,6 +177,9 @@ didCompleteWithError:(NSError *)error
             NSError *serializationError = nil;
             responseObject = [manager.responseSerializer responseObjectForResponse:task.response data:[NSData dataWithData:self.mutableData] error:&serializationError];
 
+            NSCachedURLResponse * cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:task.response data:self.mutableData];
+            [[NSURLCache sharedURLCache] storeCachedResponse:cachedResponse forRequest:task.originalRequest];
+            
             if (self.downloadFileURL) {
                 responseObject = self.downloadFileURL;
             }
