@@ -184,9 +184,11 @@ didCompleteWithError:(NSError *)error
         dispatch_async(url_session_manager_processing_queue(), ^{
             NSError *serializationError = nil;
             responseObject = [manager.responseSerializer responseObjectForResponse:task.response data:data error:&serializationError];
-
-            NSCachedURLResponse * cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:task.response data:self.mutableData];
-            [[NSURLCache sharedURLCache] storeCachedResponse:cachedResponse forRequest:task.originalRequest];
+            
+            if ([@"GET" isEqualToString:task.originalRequest.HTTPMethod]) {
+              NSCachedURLResponse * cachedResponse = [[NSCachedURLResponse alloc] initWithResponse:task.response data:self.mutableData];
+              [[NSURLCache sharedURLCache] storeCachedResponse:cachedResponse forRequest:task.originalRequest];
+            }
             
             if (self.downloadFileURL) {
                 responseObject = self.downloadFileURL;
